@@ -1,0 +1,60 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.29"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "prog",
+					"targetIndexes" : 
+					[
+						0
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "prog::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-prog-Debug-470c8b89406118034f80.json",
+					"name" : "prog",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/intak/Desktop/\u043e\u0441\u0438\u0441\u043f \u043a\u0443\u0440\u0441\u0430\u0447/prog/cmake-build-debug",
+		"source" : "C:/Users/intak/Desktop/\u043e\u0441\u0438\u0441\u043f \u043a\u0443\u0440\u0441\u0430\u0447/prog"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}

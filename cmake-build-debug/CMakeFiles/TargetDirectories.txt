@@ -1,0 +1,3 @@
+C:/Users/intak/Desktop/осисп курсач/prog/cmake-build-debug/CMakeFiles/prog.dir
+C:/Users/intak/Desktop/осисп курсач/prog/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/intak/Desktop/осисп курсач/prog/cmake-build-debug/CMakeFiles/rebuild_cache.dir
