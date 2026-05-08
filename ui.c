@@ -7,6 +7,10 @@ void init_ui() {
     noecho();
     cbreak();
     keypad(stdscr, TRUE);
+    tart_color();
+    use_default_colors();
+    init_pair(1, COLOR_CYAN, -1);
+    init_pair(2, COLOR_MAGENTA, -1);
 }
 
 void shutdown_ui() {
@@ -20,13 +24,15 @@ static void draw_panel(Panel *p, int x, int w, int active) {
         int idx = t->scroll + i;
         if (idx >= t->count) break;
 
-        if (idx == t->cursor && active)
-            attron(A_REVERSE);
+        if (t->files[idx].is_dir) attron(COLOR_PAIR(1));
+        else if (t->files[idx].is_link) attron(COLOR_PAIR(2));
+        if (idx == t->cursor && active) attron(A_REVERSE);
 
         mvprintw(i, x, "%-*s", w - 1, t->files[idx].name);
 
-        if (idx == t->cursor && active)
-            attroff(A_REVERSE);
+        if (idx == t->cursor && active) attroff(A_REVERSE);
+        if (t->files[idx].is_dir) attroff(COLOR_PAIR(1));
+        else if (t->files[idx].is_link) attroff(COLOR_PAIR(2));
     }
 }
 
@@ -48,7 +54,7 @@ void draw_ui(Panel *l, Panel *r, int active) {
     draw_status(get_active_tab(p));
 
     mvprintw(LINES - 1, 0,
-             "TAB-switch | Enter-open | Backspace-up | F5 copy | F6 move | F7 mkdir | F8 delete | q-exit");
+             "TAB-switch panel | <-/-> tabs | t/w tab+/- | Enter-open | Backspace-up | F5/F6/F7/F8 | q-exit");
 
     refresh();
 }

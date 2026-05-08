@@ -1,10 +1,12 @@
 #include "input.h"
 #include "fs.h"
+#include <stdio.h>
 #include <ncurses.h>
 #include <string.h>
 
 static void build_path(char *out, const char *dir, const char *file) {
-    sprintf(out, "%s/%s", dir, file);
+    if (strcmp(dir, "/") == 0) sprintf(out, "/%s", file);
+    else sprintf(out, "%s/%s", dir, file);
 }
 
 int handle_input(int ch, Panel *l, Panel *r, int *active) {
@@ -18,11 +20,19 @@ int handle_input(int ch, Panel *l, Panel *r, int *active) {
         case 'q': return 1;
         case '\t': *active = !*active; break;
 
-        case KEY_UP: if (t->cursor > 0) t->cursor--; break;
-        case KEY_DOWN: if (t->cursor < t->count - 1) t->cursor++; break;
+            if (t->cursor > 0) t->cursor--;
+            if (t->cursor < t->scroll) t->scroll = t->cursor;
+            break;
+        case KEY_DOWN:
+            if (t->cursor < t->count - 1) t->cursor++;
+            if (t->cursor >= t->scroll + LINES - 3) t->scroll = t->cursor - (LINES - 4);
+            break;
 
         case 10: enter_dir(t); break;
-        case KEY_BACKSPACE: enter_dir(t); break;
+        case KEY_BACKSPACE:
+        case 127:
+            up_dir(t);
+            break;
 
         case KEY_F(5): {
             char src[512], dst[512];
@@ -44,7 +54,9 @@ int handle_input(int ch, Panel *l, Panel *r, int *active) {
         }
 
         case KEY_F(7): {
-            make_dir("new_folder");
+            char path[512];
+            build_path(path, t->path, "new_folder");
+            make_dir(path);
             load_dir(t);
             break;
         }

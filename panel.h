@@ -7,7 +7,11 @@
 typedef struct {
     char name[256];
     int is_dir;
+    int is_link;
     int selected;
+    unsigned long long size;
+    unsigned int mode;
+    long long mtime;
 } FileItem;
 
 typedef struct {
@@ -28,6 +32,7 @@ void init_panel(Panel *p, const char *path);
 Tab* get_active_tab(Panel *p);
 void load_dir(Tab *t);
 void enter_dir(Tab *t);
+void up_dir(Tab *t);
 void new_tab(Panel *p);
 void close_tab(Panel *p);
 
