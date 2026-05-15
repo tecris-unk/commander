@@ -10,4 +10,5 @@ add_executable(prog main.c
         fs.c
         fs.h
         input.c
-        input.h)
+        input.h
+)

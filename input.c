@@ -1,5 +1,6 @@
 #include "input.h"
 #include "fs.h"
+#include "ui.h"
 #include <stdio.h>
 #include <ncurses.h>
 #include <string.h>
@@ -35,6 +36,7 @@ int handle_input(int ch, Panel *l, Panel *r, int *active) {
             break;
 
         case KEY_F(5): {
+            if (t->count == 0) break;
             char src[512], dst[512];
             build_path(src, t->path, t->files[t->cursor].name);
             build_path(dst, to->path, t->files[t->cursor].name);
@@ -44,6 +46,7 @@ int handle_input(int ch, Panel *l, Panel *r, int *active) {
         }
 
         case KEY_F(6): {
+            if (t->count == 0) break;
             char src[512], dst[512];
             build_path(src, t->path, t->files[t->cursor].name);
             build_path(dst, to->path, t->files[t->cursor].name);
@@ -55,16 +58,32 @@ int handle_input(int ch, Panel *l, Panel *r, int *active) {
 
         case KEY_F(7): {
             char path[512];
-            build_path(path, t->path, "new_folder");
+            char name[256] = "new_folder";
+            if (!ui_prompt("New dir", name, sizeof(name))) break;
+            build_path(path, t->path, name);
             make_dir(path);
             load_dir(t);
             break;
         }
 
         case KEY_F(8): {
+            if (t->count == 0) break;
+            if (!ui_confirm("Delete selected file? (y/n)")) break;
             char path[512];
             build_path(path, t->path, t->files[t->cursor].name);
             delete_file(path);
+            load_dir(t);
+            break;
+        }
+
+        case KEY_F(4): {
+            if (t->count == 0) break;
+            char src[512], dst[512], name[256];
+            strcpy(name, t->files[t->cursor].name);
+            if (!ui_prompt("Rename to", name, sizeof(name))) break;
+            build_path(src, t->path, t->files[t->cursor].name);
+            build_path(dst, t->path, name);
+            move_file(src, dst);
             load_dir(t);
             break;
         }

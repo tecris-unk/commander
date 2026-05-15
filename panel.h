@@ -34,6 +34,7 @@ void load_dir(Tab *t);
 void enter_dir(Tab *t);
 void up_dir(Tab *t);
 void new_tab(Panel *p);
+void sort_tab(Tab *t);
 void close_tab(Panel *p);
 
 #endif

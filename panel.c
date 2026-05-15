@@ -3,8 +3,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <strings.h>
 #include <limits.h>
 #include <sys/stat.h>
+#include <stdlib.h>
 
 static void join_path(char *out, size_t out_size, const char *base, const char *name) {
     if (strcmp(base, "/") == 0) {
@@ -52,9 +54,25 @@ void load_dir(Tab *t) {
     }
 
     if (t->cursor >= t->count) t->cursor = t->count > 0 ? t->count - 1 : 0;
+    sort_tab(t);
 
     closedir(d);
 }
+
+static int file_cmp(const void *a, const void *b) {
+    const FileItem *fa = (const FileItem *)a;
+    const FileItem *fb = (const FileItem *)b;
+
+    if (strcmp(fa->name, "..") == 0) return -1;
+    if (strcmp(fb->name, "..") == 0) return 1;
+    if (fa->is_dir != fb->is_dir) return fb->is_dir - fa->is_dir;
+    return strcasecmp(fa->name, fb->name);
+}
+
+void sort_tab(Tab *t) {
+    qsort(t->files, t->count, sizeof(FileItem), file_cmp);
+}
+
 
 void init_panel(Panel *p, const char *path) {
     p->tab_count = 1;

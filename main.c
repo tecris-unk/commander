@@ -1,8 +1,8 @@
-
 #include "ui.h"
 #include "input.h"
 #include "panel.h"
 #include <signal.h>
+#include <stdlib.h>
 
 void handle_resize(int sig) {
     endwin();
@@ -15,19 +15,28 @@ int main() {
 
     init_ui();
 
-    Panel left, right;
-    init_panel(&left, ".");
-    init_panel(&right, ".");
+    Panel *left = calloc(1, sizeof(Panel));
+    Panel *right = calloc(1, sizeof(Panel));
+    if (!left || !right) {
+        shutdown_ui();
+        free(left);
+        free(right);
+        return 1;
+    }
+    init_panel(left, ".");
+    init_panel(right, ".");
 
     int active = 0;
 
     while (1) {
-        draw_ui(&left, &right, active);
+        draw_ui(left, right, active);
         int ch = getch();
-        if (handle_input(ch, &left, &right, &active)) break;
+        if (handle_input(ch, left, right, &active)) break;
     }
 
     shutdown_ui();
+    free(left);
+    free(right);
     return 0;
 }
 
