@@ -1,42 +1,42 @@
 ```mermaid
 flowchart TD
-    A[Start enter_dir] --> B{count is zero}
-    B -->|yes| Z[return]
-    B -->|no| C[Take selected item by cursor]
-    C --> D{is directory}
-    D -->|no| Z
-    D -->|yes| E{name equals parent}
-    E -->|yes| F[call up_dir]
-    E -->|no| G{name equals dot}
-    G -->|yes| H[keep path]
-    G -->|no| I[join current path and name]
-    I --> J[write new path]
-    H --> K[reset cursor and scroll]
+    A[Начало enter_dir] --> B{Список пуст}
+    B -->|Да| Z[Выход из функции]
+    B -->|Нет| C[Выбор элемента по cursor]
+    C --> D{Элемент является каталогом}
+    D -->|Нет| Z
+    D -->|Да| E{Выбран родительский каталог}
+    E -->|Да| F[Переход на уровень вверх]
+    E -->|Нет| G{Выбран текущий каталог}
+    G -->|Да| H[Путь не изменяется]
+    G -->|Нет| I[Формирование нового пути]
+    I --> J[Обновление текущего пути]
+    H --> K[Сброс cursor и scroll]
     F --> K
     J --> K
-    K --> L[load_dir]
+    K --> L[Перезагрузка списка файлов]
     L --> Z
 ```
 
 ## 3.2 Функциональная схема: `load_dir`
 ```mermaid
 flowchart TD
-    A[Start load_dir] --> B[opendir current path]
-    B -->|ошибка| Z[return]
-    B -->|ok| C[t.count = 0]
-    C --> D{readdir && count < MAX_FILES}
-    D -->|yes| E[Заполнить f->name, selected]
-    E --> F[join full path]
-    F --> G{lstat ok}
-    G -->|yes| H[Заполнить is_dir/is_link/size/mode/mtime]
-    G -->|no| I[Поставить поля в 0]
-    H --> J[count++]
+    A[Начало load_dir] --> B[Открытие текущего каталога]
+    B -->|Ошибка| Z[Выход из функции]
+    B -->|Успех| C[Сброс счётчика элементов]
+    C --> D{Есть записи и не достигнут MAX_FILES}
+    D -->|Да| E[Заполнение имени и признака выбора]
+    E --> F[Формирование полного пути]
+    F --> G{Чтение атрибутов успешно}
+    G -->|Да| H[Заполнение типа, размера и времени]
+    G -->|Нет| I[Сброс атрибутов в ноль]
+    H --> J[Увеличение счётчика]
     I --> J
     J --> D
-    D -->|no| K[Нормализовать cursor]
-    K --> L[sort_tab]
-    L --> M[closedir]
-    M --> N[return]
+    D -->|Нет| K[Нормализация cursor]
+    K --> L[Сортировка списка]
+    L --> M[Закрытие каталога]
+    M --> N[Выход из функции]
 ```
 
 ## 3.3 Диаграмма состояний
