@@ -1,20 +1,20 @@
 ```mermaid
 flowchart TD
-    A[Start handle_input(ch,l,r,active)] --> B[Определить active panel p и other panel]
+    A[Start handle_input] --> B[Определить active panel p и other panel]
     B --> C[Получить активные Tab: t и to]
-    C --> D{switch(ch)}
+    C --> D{switch by key}
 
     D -->|q| E[return 1]
     D -->|TAB| F[Переключить active]
     D -->|KEY_UP/KEY_DOWN| G[Сдвинуть cursor/scroll]
-    D -->|Enter| H[enter_dir(t)]
-    D -->|Backspace| I[up_dir(t)]
-    D -->|F5| J[copy_file(src,dst); load_dir(to)]
-    D -->|F6| K[move_file(src,dst); load_dir(t,to)]
-    D -->|F7| L[ui_prompt -> make_dir -> load_dir(t)]
-    D -->|F8| M[ui_confirm -> delete_file -> load_dir(t)]
-    D -->|F4| N[ui_prompt -> move_file(rename) -> load_dir(t)]
-    D -->|t/w| O[new_tab/close_tab]
+    D -->|Enter| H[enter_dir]
+    D -->|Backspace| I[up_dir]
+    D -->|F5| J[copy_file then load_dir target]
+    D -->|F6| K[move_file then reload tabs]
+    D -->|F7| L[prompt name then make_dir then load_dir]
+    D -->|F8| M[confirm then delete_file then load_dir]
+    D -->|F4| N[prompt name then rename then load_dir]
+    D -->|t or w| O[new_tab or close_tab]
     D -->|LEFT/RIGHT| P[Сменить active_tab]
 
     F --> Q[return 0]
@@ -33,20 +33,20 @@ flowchart TD
 ## 3.2 Функциональная схема: `load_dir`
 ```mermaid
 flowchart TD
-    A[Start load_dir(t)] --> B[opendir(t.path)]
+    A[Start load_dir] --> B[opendir current path]
     B -->|ошибка| Z[return]
     B -->|ok| C[t.count = 0]
     C --> D{readdir && count < MAX_FILES}
     D -->|yes| E[Заполнить f->name, selected]
-    E --> F[join_path(full, t.path, f.name)]
-    F --> G{lstat(full) ok?}
+    E --> F[join full path]
+    F --> G{lstat ok}
     G -->|yes| H[Заполнить is_dir/is_link/size/mode/mtime]
     G -->|no| I[Поставить поля в 0]
     H --> J[count++]
     I --> J
     J --> D
     D -->|no| K[Нормализовать cursor]
-    K --> L[sort_tab(t)]
+    K --> L[sort_tab]
     L --> M[closedir]
     M --> N[return]
 ```
