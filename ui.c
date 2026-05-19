@@ -8,7 +8,7 @@ void init_ui() {
     noecho();
     cbreak();
     keypad(stdscr, TRUE);
-    tart_color();
+    start_color();
     use_default_colors();
     init_pair(1, COLOR_CYAN, -1);
     init_pair(2, COLOR_MAGENTA, -1);
@@ -42,7 +42,11 @@ static void draw_status(Tab *t) {
     statvfs(t->path, &s);
     long free = (s.f_bavail * s.f_frsize) / 1024 / 1024;
 
+<<<<<<< HEAD
     "TAB switch | <-/-> tabs | t/w tabs | Enter/open | Backspace/up | F4 ren F5 cp F6 mv F7 mk F8 rm | q");
+=======
+  //  "TAB switch | <-/-> tabs | t/w tabs | Enter/open | Backspace/up | F4 ren F5 cp F6 mv F7 mk F8 rm | q";
+>>>>>>> 5446323 (commit)
 }
 
 void draw_ui(Panel *l, Panel *r, int active) {

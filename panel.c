@@ -1,3 +1,5 @@
+#define _GNU_SOURCE   // enables PATH_MAX, lstat, DT_* macros
+
 #include "panel.h"
 #include <dirent.h>
 #include <string.h>
@@ -19,6 +21,9 @@ static void join_path(char *out, size_t out_size, const char *base, const char *
 Tab* get_active_tab(Panel *p) {
     return &p->tabs[p->active_tab];
 }
+
+// Forward declaration for sort_tab
+static void sort_tab(Tab *t);
 
 void load_dir(Tab *t) {
     DIR *d = opendir(t->path);
@@ -44,8 +49,9 @@ void load_dir(Tab *t) {
             f->mode = st.st_mode;
             f->mtime = (long long) st.st_mtime;
         } else {
-            f->is_dir = (e->d_type == DT_DIR);
-            f->is_link = (e->d_type == DT_LNK);
+            // lstat failed – treat as non‑directory, non‑link
+            f->is_dir = 0;
+            f->is_link = 0;
             f->size = 0;
             f->mode = 0;
             f->mtime = 0;
@@ -69,11 +75,18 @@ static int file_cmp(const void *a, const void *b) {
     return strcasecmp(fa->name, fb->name);
 }
 
+<<<<<<< HEAD
 void sort_tab(Tab *t) {
     qsort(t->files, t->count, sizeof(FileItem), file_cmp);
 }
 
 
+=======
+static void sort_tab(Tab *t) {
+    qsort(t->files, t->count, sizeof(FileItem), file_cmp);
+}
+
+>>>>>>> 5446323 (commit)
 void init_panel(Panel *p, const char *path) {
     p->tab_count = 1;
     p->active_tab = 0;
@@ -91,12 +104,16 @@ void enter_dir(Tab *t) {
 
     if (!f->is_dir) return;
 
-    if (strcmp(f->name, "..") == 0) up_dir(t);
-    else if (strcmp(f->name, ".") != 0) join_path(t->path, sizeof(t->path), t->path, f->name);
+    if (strcmp(f->name, "..") == 0) {
+        up_dir(t);
+    } else if (strcmp(f->name, ".") != 0) {
+        char newpath[PATH_MAX];
+        join_path(newpath, sizeof(newpath), t->path, f->name);
+        strcpy(t->path, newpath);          // безопасное копирование
+    }
 
     t->cursor = 0;
     t->scroll = 0;
-
     load_dir(t);
 }
 

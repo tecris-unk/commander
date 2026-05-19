@@ -6,8 +6,10 @@
 #include <string.h>
 
 static void build_path(char *out, const char *dir, const char *file) {
-    if (strcmp(dir, "/") == 0) sprintf(out, "/%s", file);
-    else sprintf(out, "%s/%s", dir, file);
+    if (strcmp(dir, "/") == 0)
+        sprintf(out, "/%s", file);
+    else
+        sprintf(out, "%s/%s", dir, file);
 }
 
 int handle_input(int ch, Panel *l, Panel *r, int *active) {
@@ -18,20 +20,29 @@ int handle_input(int ch, Panel *l, Panel *r, int *active) {
     Tab *to = get_active_tab(other);
 
     switch (ch) {
-        case 'q': return 1;
-        case '\t': *active = !*active; break;
+        case 'q':
+            return 1;
 
+        case '\t':
+            *active = !*active;
+            break;
+
+        case KEY_UP:
             if (t->cursor > 0) t->cursor--;
             if (t->cursor < t->scroll) t->scroll = t->cursor;
             break;
+
         case KEY_DOWN:
             if (t->cursor < t->count - 1) t->cursor++;
             if (t->cursor >= t->scroll + LINES - 3) t->scroll = t->cursor - (LINES - 4);
             break;
 
-        case 10: enter_dir(t); break;
+        case 10:                         // Enter
+            enter_dir(t);
+            break;
+
         case KEY_BACKSPACE:
-        case 127:
+        case 127:                        // Delete key (often same as backspace)
             up_dir(t);
             break;
 
@@ -88,12 +99,23 @@ int handle_input(int ch, Panel *l, Panel *r, int *active) {
             break;
         }
 
+<<<<<<< HEAD
         case 't': new_tab(p); break;
         case 'w': close_tab(p); break;
+=======
+        case 't':
+            new_tab(p);
+            break;
+
+        case 'w':
+            close_tab(p);
+            break;
+>>>>>>> 5446323 (commit)
 
         case KEY_LEFT:
             if (p->active_tab > 0) p->active_tab--;
             break;
+
         case KEY_RIGHT:
             if (p->active_tab < p->tab_count - 1) p->active_tab++;
             break;
