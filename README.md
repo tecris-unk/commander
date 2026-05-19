@@ -1,33 +1,21 @@
 ```mermaid
 flowchart TD
-    A[Start handle_input] --> B[Определить active panel p и other panel]
-    B --> C[Получить активные Tab: t и to]
-    C --> D{switch by key}
-
-    D -->|q| E[return 1]
-    D -->|TAB| F[Переключить active]
-    D -->|KEY_UP/KEY_DOWN| G[Сдвинуть cursor/scroll]
-    D -->|Enter| H[enter_dir]
-    D -->|Backspace| I[up_dir]
-    D -->|F5| J[copy_file then load_dir target]
-    D -->|F6| K[move_file then reload tabs]
-    D -->|F7| L[prompt name then make_dir then load_dir]
-    D -->|F8| M[confirm then delete_file then load_dir]
-    D -->|F4| N[prompt name then rename then load_dir]
-    D -->|t or w| O[new_tab or close_tab]
-    D -->|LEFT/RIGHT| P[Сменить active_tab]
-
-    F --> Q[return 0]
-    G --> Q
-    H --> Q
-    I --> Q
-    J --> Q
-    K --> Q
-    L --> Q
-    M --> Q
-    N --> Q
-    O --> Q
-    P --> Q
+    A[Start enter_dir] --> B{count is zero}
+    B -->|yes| Z[return]
+    B -->|no| C[Take selected item by cursor]
+    C --> D{is directory}
+    D -->|no| Z
+    D -->|yes| E{name equals parent}
+    E -->|yes| F[call up_dir]
+    E -->|no| G{name equals dot}
+    G -->|yes| H[keep path]
+    G -->|no| I[join current path and name]
+    I --> J[write new path]
+    H --> K[reset cursor and scroll]
+    F --> K
+    J --> K
+    K --> L[load_dir]
+    L --> Z
 ```
 
 ## 3.2 Функциональная схема: `load_dir`
